@@ -19,6 +19,8 @@ const AppLayout = (props) => { // Removed the higher-order component wrapper
    
   const { isLoading, data, isError, error, refetch } = useMyChatsQuery("");
 
+  
+
   const [onlineUsers, setOnlineUsers] = useState([]);
   // console.log('online users applayout = ',onlineUsers)
   
@@ -28,6 +30,8 @@ const AppLayout = (props) => { // Removed the higher-order component wrapper
   const dispatch  = useDispatch() 
 
   const { newMessagesAlert } = useSelector((state) => state.chat);
+  const isVerified = useSelector((state) => state.auth.user?.isVerified);
+  
 
   // console.log('chatid',chatId)
   // console.log('data = ',data)
@@ -91,6 +95,10 @@ useEffect(() => {
   socket.on(ONLINE_USERS,onlineUsersListener);
   return () => {socket.off(ONLINE_USERS,onlineUsersListener); };
 } ,[]);
+
+if (!isVerified) {
+  return window.location.href = "/verify-email";
+}
   
   return (
     <div className="w-full min-h-screen relative">

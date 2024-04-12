@@ -1,71 +1,18 @@
-import React, { useRef } from "react";
-import AppLayout from "../components/AppLayout";
-import { CgAttachment } from "react-icons/cg";
-import { IoMdSend } from "react-icons/io";
-import { SampleMessage } from "../utils/SampleMessage";
-import MessageComponent from "../components/MessageComponent";
+ the history object is provided by the React Router library. It allows components to interact with the browsing history, such as programmatically navigating to different pages within the application.
 
-const user = {
-  _id: "yooKiId",
-  name: "yoo",
-};
+In the context of the VerifyEmail component, the history object is used to redirect the user to the home page ("/") upon successful verification of the OTP. After verifying the email, the user should be redirected to the home page to continue using the application.
 
-const Chat = () => {
-  const containerRef = useRef(null);
+Here's how it works:
 
-  return (
-    <div ref={containerRef} className="flex flex-col h-full">
-      <div className="h-full flex">
-        {/* {SampleMessage.map((msg) => (
-      <MessageComponent message={msg} user={user} key={msg.id} />
-    ))} */}
-        <div className="w-1/2 bg-green-400 h-full flex-">
-          {SampleMessage.map((message, index) => {
-            if (message.sender._id !== user._id) {
-              return (
-                <div key={index} className="message">
-                  <p>{message.sender.name}</p>
-                  <p>{message.content}</p>
-                </div>
-              );
-            }
-            return null; // Skip rendering messages from other senders
-          })}
-        </div>
-        <div className="w-1/2 h-full bg-red-600">
-          {SampleMessage.map((message, index) => {
-            if (message.sender._id === user._id) {
-              return (
-                <div key={index} className="message">
-                  <p>{message.sender.name}</p>
-                  <p>{message.content}</p>
-                </div>
-              );
-            }
-            return null; // Skip rendering messages from other senders
-          })}
-        </div>
-      </div>
-      <div className="p-3 bg-gray-300">
-        <form className="flex items-center">
-          <CgAttachment className="w-8 h-8 mr-2" />
-          <input
-            placeholder="Type some message here.."
-            className="flex-1 p-2 border border-gray-400 rounded-lg"
-          />
-          <IoMdSend type="submit" className="w-8 h-8 ml-2" />
-        </form>
-      </div>
-    </div>
-  );
-};
+When the user enters the correct OTP and clicks the "Verify" button, the handleVerify function is called.
 
-export default AppLayout()(Chat);
+Inside handleVerify, if the OTP verification is successful (i.e., the backend responds with success), history.push("/") is used to redirect the user to the home page ("/").
 
+If there's an error during OTP verification or the OTP is incorrect, the user remains on the VerifyEmail page, and an error message is displayed.
 
-npm run satrt
-npm strat
+By using history.push("/"), the component is able to programmatically navigate the user to a different page within the application, facilitating a seamless user experience.
 
 
 //TODO
 1. local strorage me save nhi ho rha
+2. friend request sent kren pe ntofication pe show nhi hota, page refresh krna padta hai

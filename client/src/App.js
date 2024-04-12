@@ -13,6 +13,9 @@ import { server } from "./constants/config";
 
 import {Toaster} from 'react-hot-toast'
 import { SocketProvider } from "./socket";
+import VerifyEmail from "./pages/VerifyEmail";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
 // let user = true;
 
@@ -33,7 +36,16 @@ const App = () => {
     }, [dispatch]);
     
     if (loading || loader) {
-      return <div>Loading...</div>;
+      return    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh', // Set height to full viewport height
+      }}
+    >
+      <CircularProgress color="success" size={100} thickness={2} /> {/* Set size and thickness */}
+    </Box>
   }
 
     return  (
@@ -55,6 +67,12 @@ const App = () => {
                 <Login />
               </PrivateRoute>
             }
+          />
+           <Route
+            path="/verify-email"
+            element={<PrivateRoute user={user} redirect="/verify-email"> {/* Redirect user to VerifyEmail if not verified */}
+              <VerifyEmail />
+            </PrivateRoute>}
           />
 
 

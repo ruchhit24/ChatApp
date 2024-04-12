@@ -91,7 +91,7 @@ export const newUser = async(req,res) => {
     }
    const token = await VerificationToken.findOne({owner : user._id})
    if(!token){
-    return res.status(400).json({ success: false, message: 'user not found' });
+    return res.status(400).json({ success: false, message: 'user not found token' });
   }
   const isMatched = await token.compareToken(otp)
   if(!isMatched){
@@ -100,7 +100,7 @@ export const newUser = async(req,res) => {
   user.isVerified = true;
 
   //delete the token from our database
-  await VerificationToken.findByIdAndDelete(token._id)
+  // await VerificationToken.findByIdAndDelete(token._id)
   await user.save()
 
   return res.status(200).json({ success: true, message: 'Email Verified Successfully!!' });

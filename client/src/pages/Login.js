@@ -7,7 +7,9 @@ import axios from "axios";
 import { userExists } from "../redux/reducers/auth";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; 
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 
  
 
@@ -25,7 +27,8 @@ const Login = () => {
   const password = useStrongPassword();
   const avatar = useFileHandler("single")
 
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
+
 
   const handleClick = () => {
     setIsSignedin(!isSignedin);
@@ -54,7 +57,7 @@ const Login = () => {
       );
       dispatch(userExists(data.user));
       toast.success(data.message);
-      navigate("/")
+      window.location.href = "/";
     } catch (error) {
      toast.error(error?.response?.data?.message || "Something Went Wrong");
     } finally {
@@ -64,7 +67,7 @@ const Login = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault(); 
-
+    setIsLoading(true);
     const formData = new FormData();
     formData.append("avatar", avatar.file);
     formData.append("name", name.value);
@@ -86,10 +89,17 @@ const Login = () => {
         formData,
         config
       );
-
+     console.log(data)
       dispatch(userExists(data.user));
       toast.success(data.message);
-      navigate("/")
+      window.location.href = "/verify-email";
+      if (!data.user.isVerified) {
+        // Redirect to verify-email page only for the first registration
+        window.location.href = "/verify-email";
+      } else {
+        // Redirect to home page for subsequent registrations
+        window.location.href = "/";
+      }
 
     } catch (error) {
      toast.error(error?.response?.data?.message || "Something Went Wrong");
@@ -97,6 +107,11 @@ const Login = () => {
       setIsLoading(false);
     }
   };
+
+  const avatarHandler = (e)=>{
+    e.preventDefault()
+     setShowAvatar(true); 
+  }
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center bg-[url('https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover ">
@@ -122,9 +137,28 @@ const Login = () => {
                 onChange={password.changeHandler}
               />
               <div className="flex justify-center items-center mt-6">
-              <button type="submit" className="px-4 py-2 bg-gradient-to-r from-cyan-400 to-cyan-700 rounded-lg cursor-pointer font-semibold text-white ">
-                LOGIN
-              </button>
+              <>
+      {isLoading ? ( // Render loader if isLoading is true
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            // height: '100vh', // Set height to full viewport height
+          }}
+        >
+          <CircularProgress color="success" size={40} /> {/* Set size */}
+        </Box>
+      ) : ( // Render button if isLoading is false
+        <button
+          type="submit"
+          className="px-4 py-2 bg-gradient-to-r from-cyan-400 to-cyan-700 rounded-lg cursor-pointer font-semibold text-white"
+          
+        >
+          LOGIN
+        </button>
+      )}
+    </>
             </div>
             </form>
              
@@ -215,7 +249,7 @@ const Login = () => {
               />
               <div className="flex items-center justify-center">
               <input type="file" accept="image/*" className="p-3 text-xs" onChange={avatar.changeHandler}  />
-              <button className=" px-2 py-2 bg-gradient-to-r from-cyan-500 to-cyan-800 rounded-lg text-xs text-white" onClick={() => setShowAvatar(true)}>
+              <button className=" px-2 py-2 bg-gradient-to-r from-cyan-500 to-cyan-800 rounded-lg text-xs text-white" onClick={avatarHandler}>
                 Upload Image
               </button>
               
@@ -230,9 +264,28 @@ const Login = () => {
 
             </div>
             <div className="flex justify-center items-center mt-6">
-              <button type="submit" className="px-4 py-2 bg-gradient-to-r from-cyan-400 to-cyan-700 rounded-lg cursor-pointer font-semibold text-white ">
-                REGISTER
-              </button>
+            <>
+      {isLoading ? ( // Render loader if isLoading is true
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            //height: '100vh', // Set height to full viewport height
+          }}
+        >
+          <CircularProgress color="success" size={40} /> {/* Set size */}
+        </Box>
+      ) : ( // Render button if isLoading is false
+        <button
+          type="submit"
+          className="px-4 py-2 bg-gradient-to-r from-cyan-400 to-cyan-700 rounded-lg cursor-pointer font-semibold text-white"
+         
+        >
+          REGISTER
+        </button>
+      )}
+    </>
             </div>
             </form>
              
