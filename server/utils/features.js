@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { v2 as cloudinary } from "cloudinary";
 import { userSocketIds } from "../index.js";
 import { io } from "../index.js";
+import crypto from 'crypto' 
    
 const getBase64 = (file) =>
 `data:${file.mimetype};base64,${file.buffer.toString("base64")}`;
@@ -52,5 +53,19 @@ export const uploadFilesToCloudinary = async (files = []) => {
     const usersSocket = getSockets(users);
     io.to(usersSocket).emit(event, data);
   };
+
+  // to generate a random token
+  export const createRandomBytes = () => {
+    return new Promise((resolve, reject) => {
+        crypto.randomBytes(30, (err, buff) => {
+            if (err) {
+                reject(err);
+            } else {
+                const token = buff.toString('hex');
+                resolve(token);
+            }
+        });
+    });
+};
   
   export { emitEvent}

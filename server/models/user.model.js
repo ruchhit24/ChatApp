@@ -1,5 +1,6 @@
 import { hash } from "bcrypt";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema({
 
@@ -19,7 +20,7 @@ const userSchema = new mongoose.Schema({
     password : {
         type :String,
         required : true,
-        select : false,
+        select : true,
     },
     bio : {
         type :String,
@@ -42,10 +43,28 @@ const userSchema = new mongoose.Schema({
     },
 },{ timestamps : true})
 
-userSchema.pre("save",async function( next ){
-    if(!this.isModified("password")) return next()
+userSchema.pre("save", async function(next) {
+    if (!this.isModified("password")) return next();
 
-    this.password = await hash(this.password,10)
-})
+    try {
+        const hashedPassword = await bcrypt.hash(this.password, 10);
+        console.log("Hashed password:", hashedPassword);
+        this.password = hashedPassword;
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
+
+userSchema.methods.comparePassword = async function(candidatePassword) {
+    console.log("Candidate password:", candidatePassword);
+    console.log("Stored hashed password:", this.password);
+    try {
+        const result = await bcrypt.compareSync(candidatePassword, this.password);
+        return result; // return true or false
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
 
 export const User = mongoose.model('User',userSchema) 

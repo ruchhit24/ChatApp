@@ -1,8 +1,9 @@
 import express from 'express'
-import { acceptFriendRequest, getMyFriends, getMyNotifications, getMyProfile, login, logout, newUser, searchUser, sendFriendRequest, userTestContoller, verifyEmail } from '../controllers/user.controller.js';
+import { acceptFriendRequest, forgotPassword, getMyFriends, getMyNotifications, getMyProfile, login, logout, newUser, resetPassword, searchUser, sendFriendRequest, userTestContoller, verifyEmail } from '../controllers/user.controller.js';
 import { AvatarUpload } from '../middlewares/multer.js';
 import { isAuthenticated } from '../middlewares/auth.js';
 import { acceptRequestValidator, loginValidator, registerValidator, sendRequestValidator, validateHandler } from '../utils/validator.js';
+import { isResetTokenValid } from '../middlewares/user.js';
 
 export const router = express.Router();
 
@@ -12,6 +13,8 @@ router
 .post('/new',AvatarUpload,registerValidator(),validateHandler,newUser)
 .post('/login',loginValidator(),validateHandler,login)
 .post('/verify-email',verifyEmail)
+.post('/forgot-password',forgotPassword)
+.post('/reset-password',isResetTokenValid,resetPassword)
 
 
 // ab yha se sare routes me authentication required h

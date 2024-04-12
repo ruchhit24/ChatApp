@@ -3,12 +3,13 @@ import { User } from "../models/user.model.js"
 import { Request } from "../models/request.model.js"
 import {Chat} from '../models/chat.model.js' 
   import { sendToken } from "../utils/sendToken.js"
-import { emitEvent, uploadFilesToCloudinary } from "../utils/features.js"
+import { createRandomBytes, emitEvent, uploadFilesToCloudinary } from "../utils/features.js"
 import { NEW_REQUEST, ONLINE_USERS, REFETCH_CHATS } from "../constants/events.js"
 import { io, onlineUsers } from "../index.js"
-import { generateEmailTemplate, generateOtp, mailTransport } from "../utils/mail.js"
+import { generateEmailTemplate, generateOtp, generatePaswordResetTemplate, mailTransport } from "../utils/mail.js"
 import { VerificationToken } from "../models/verificationToken.model.js"
-import { isValidObjectId } from "mongoose"
+import { isValidObjectId } from "mongoose" 
+import { ResetToken } from "../models/resetToken.model.js"
 
 export const userTestContoller = (req,res)=>{
   res.send('hellow world')
@@ -104,6 +105,68 @@ export const newUser = async(req,res) => {
   await user.save()
 
   return res.status(200).json({ success: true, message: 'Email Verified Successfully!!' });
+  }
+
+  export const forgotPassword = async(req,res)=>{
+    const {email} = req.body;
+    if(!email){
+      return res.status(400).json({ success: false, message: 'please provide a valid email!!' });
+
+    }
+    const user = await User.findOne({email})
+    if(!user){
+      return res.status(400).json({ success: false, message: 'user not found!!' });
+    }
+    const token = await ResetToken.findOne({owner : user._id})
+    if(token){
+      return res.status(400).json({ success: false, message: "after one hour u can request for another token!!" });
+    }
+    const randomBytes = await createRandomBytes();
+    console.log('random bytes =',randomBytes)
+    const resetToken = new ResetToken({owner : user._id ,token : randomBytes})
+    //saving token to db
+    await resetToken.save()
+
+    // we will send this token to the user
+    mailTransport().sendMail({
+      from : "VChat@gmail.com",
+      to : user.email,
+      subject : 'Password Reset',
+      html : generatePaswordResetTemplate(`http://localhost:3000/reset-password?token=${randomBytes}&id=${user._id}`)
+    })
+    return res.status(200).json({ success: true, message: 'Password reset link is sent to ur email!!' });
+    
+  }
+
+  export const resetPassword = async(req,res)=>{
+    const { password } = req.body;
+    const user = await User.findById(req.user._id).select('+password');
+    if(!user){
+      return res.status(400).json({ success: false, message: 'user not found!!' });
+    }
+
+    console.log('Stored hashed password:', user.password);
+    // now we match the password if it matched than the user is gave its old password only
+    const isSamePassword = await user.comparePassword(password)
+
+    if(isSamePassword)
+    {
+      return res.status(400).json({ success: false, message: ' New Password must be different from the old one!!' });
+    }
+    if(password.trim().length < 8 || password.trim().length > 20 )
+    {
+      return res.status(400).json({ success: false, message: 'password must be between 8 to 20 characters long!!' });
+    }
+    user.password = password.trim()
+    await user.save()
+
+    // after saving we will remove the reet token from the db
+    await ResetToken.findOneAndDelete({owner : user._id})
+
+    // we can send success email if needed
+
+    res.status(200).json({success : true , message : "password reset successfully"})
+
   }
 
   export const login = async(req,res) =>{ 
