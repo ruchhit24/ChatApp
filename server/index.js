@@ -176,17 +176,17 @@ io.on("connection", (socket) => {
   });
 });
 
-server.get("/", (req, res) => {
-  res.send("root page !!");
-});
+// server.get("/", (req, res) => {
+//   res.send("root page !!");
+// });
 
 server.use("/api/v1/user", userRouter);
 
 server.use("/api/v1/chat", chatRouter);
 
-server.use(express.static(path.join(__dirname, '/client/dist')));
+server.use(express.static(path.join(__dirname, '/client/build')));
 server.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
 });
 
 server2.listen(PORT, () => {
