@@ -16,9 +16,10 @@ const MessageComponent = ({ message, user }) => {
     <motion.div
       initial={{ opacity: 0, x: "-100%" }}
       whileInView={{ opacity: 1, x: 0 }}
-      className={`${messageClass} pr-8 pl-2 py-2 rounded-lg bg-gray-300 mt-2`}
+      className={`${messageClass} pr-8 pl-2 py-2 rounded-tl-xl rounded-bl-xl rounded-br-xl bg-gray-300 mt-2`}
     >
       {!sameSender && <h2 className="capitalize font-bold">{sender.name}</h2>}
+      {sameSender && <h2 className="capitalize font-bold">You</h2>}
       {content && <div>{content}</div>}
       {attachments.length > 0 &&
         attachments.map((attachement, index) => {

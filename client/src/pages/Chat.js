@@ -188,6 +188,14 @@ const Chat = () => {
     };
   }, [chatId]);
 
+  const sendMessage = () => {
+    if (!message.trim()) return;
+  
+    // Emitting the message to the server
+    socket.emit(NEW_MESSAGE, { chatId, members, message });
+    setMessage("");
+  };
+
 
   return chatDetails.isLoading ? (
     <Skeleton />
@@ -207,14 +215,16 @@ const Chat = () => {
         {userTyping  && <TypingLoader />}
         <div className="p-3 bg-gray-300">
           <form className="flex items-center" onSubmit={submitHandler}>
-            <CgAttachment className="w-8 h-8 mr-2" onClick={handleFileOpen} />
+            <CgAttachment className="w-8 h-8 mr-2 cursor-pointer" onClick={handleFileOpen} />
             <input
               placeholder="Type some message here.."
               value={message}
               onChange={messageOnChange}
               className="flex-1 p-2 border border-gray-400 rounded-lg"
             />
-            <IoMdSend type="submit" className="w-8 h-8 ml-2" />
+            <button type="submit" className="ml-2" onClick={sendMessage}>
+            <IoMdSend className="w-8 h-8" />
+          </button>
           </form>
           <FileMenu anchorE1={fileMenuAnchor} chatId={chatId} />
         </div>

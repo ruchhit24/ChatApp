@@ -61,7 +61,7 @@ const AppLayout = (props) => { // Removed the higher-order component wrapper
   useEffect(() => { 
     socket.on(NEW_REQUEST,newRequestListener);
     return () => { socket.off(NEW_REQUEST,newRequestListener); };
- } , [] );
+ } , [newRequestListener] );
 
  const newMessageAlertListener = useCallback(
   (data) => {

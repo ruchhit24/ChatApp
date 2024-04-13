@@ -8,14 +8,28 @@ export const generateOtp = ()=>{
   }
   return otp
 }
+
+// mailtrap : -
+
+// export const mailTransport = ()=>  nodemailer.createTransport({
+//         host: "sandbox.smtp.mailtrap.io",
+//         port: 2525,
+//         auth: {
+//           user: process.env.MAILTRAP_USERNAME,
+//           pass: process.env.MAILTRAP_PASSWORD
+//         }
+//       });
+
+
+//gmail : -
 export const mailTransport = ()=>  nodemailer.createTransport({
-        host: "sandbox.smtp.mailtrap.io",
-        port: 2525,
+         service : "gmail",
         auth: {
-          user: process.env.MAILTRAP_USERNAME,
-          pass: process.env.MAILTRAP_PASSWORD
+          user: process.env.GMAIL_SMTP_USERNAME,
+          pass: process.env.GMAIL_SMTP_PASSWORD
         }
       });
+ 
 
  export const generateEmailTemplate = (OTP,name) => {
     const currentDate = new Date().toLocaleDateString('en-US', {

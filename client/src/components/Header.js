@@ -41,6 +41,11 @@ const Header = () => {
     dispatch(setIsNewGroup(true));
   };
 
+  const openNotification = () => {
+    dispatch(setIsNotification(true)); 
+    dispatch(resetNotificationCount()); 
+  };
+
   const logoutHandler = async () => {
     try {
       const { data } = await axios.get(`${server}/api/v1/user/logout`, {
@@ -56,26 +61,45 @@ const Header = () => {
   return (
     <div className="text-3xl bg-gray-800 h-[4rem] w-full px-8 flex justify-between">
       <div className="flex items-center">
-      <img src="https://static.vecteezy.com/system/resources/previews/022/359/490/original/3d-chat-icon-png.png" className="h-10 w-10" alt="fd"/>
-        <h2 className="bg-gradient-to-r from-cyan-800 to-cyan-500 text-xl font-bold text-gray-100 leading-none tracking-wider p-2 rounded-r-full">VChat</h2>
+        <img
+          src="https://static.vecteezy.com/system/resources/previews/022/359/490/original/3d-chat-icon-png.png"
+          className="h-10 w-10"
+          alt="fd"
+        />
+        <h2 className="bg-gradient-to-r from-cyan-800 to-cyan-500 text-xl font-bold text-gray-100 leading-none tracking-wider p-2 rounded-r-full">
+          VChat
+        </h2>
       </div>
       <div className="flex gap-8 items-center justify-center">
         <Search onClick={openSearch} />
 
         <NewGroup onClick={openNewGroup} />
         <Link to={"/groups"}>
-        <Tooltip title='groups'>
-        <GroupIcon fontSize='large' className="text-white w-7 h-7 flex items-center cursor-pointer hover:text-gray-500" />
-        </Tooltip>
-           
+          <Tooltip title="groups" arrow>
+            <GroupIcon
+              fontSize="large"
+              className="text-white w-7 h-7 flex items-center cursor-pointer hover:text-gray-500"
+            />
+          </Tooltip>
         </Link>
-        {notificationCount ? (
+        {/* {notificationCount ? (
           <Badge badgeContent={notificationCount} color="error">
-            <Notification />
+            <NotificationsIcon fontSize='large' className='text-white w-6 h-6 cursor-pointer hover:text-gray-500' onClick={openNotification}/>
           </Badge>
         ) : (
-          <Notification />
+          <NotificationsIcon fontSize='large' className='text-white w-6 h-6 cursor-pointer hover:text-gray-500' onClick={openNotification}/>
+        )} */}
+        <Link to={"/notifications"}>
+        <Tooltip title="Notifications" arrow>
+        {notificationCount ? (
+          <Badge badgeContent={notificationCount} color="error">
+            <NotificationsIcon fontSize='large' className='text-white w-6 h-6 cursor-pointer hover:text-gray-500' onClick={openNotification}/>
+          </Badge>
+        ) : (
+          <NotificationsIcon fontSize='large' className='text-white w-6 h-6 cursor-pointer hover:text-gray-500' onClick={openNotification}/>
         )}
+    </Tooltip>
+        </Link>
 
         <PiSignOutBold
           className="text-white w-6 h-6 cursor-pointer hover:text-gray-500"

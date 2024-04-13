@@ -1,17 +1,18 @@
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Typography from "@mui/material/Typography";
 import React, { useEffect, useState } from "react";
 import { IoIosRemoveCircle, IoMdArrowBack } from "react-icons/io";
+import { LuPencilLine } from "react-icons/lu";
+import { MdDelete } from "react-icons/md";
+import { TiTick } from "react-icons/ti";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import GroupList from "../components/GroupList";
-import { SampleData } from "../utils/SampleData";
-import { SampleUser } from "../utils/SampleUser";
-import { LuPencilLine } from "react-icons/lu";
-import { TiTick } from "react-icons/ti";
-import { MdDelete } from "react-icons/md";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Modal from "@mui/material/Modal";
 
+import { Skeleton } from "@mui/material";
+import { toast } from "react-hot-toast";
 import { IoIosAddCircle } from "react-icons/io";
+import { useDispatch, useSelector } from "react-redux";
 import {
   useAddGroupMembersMutation,
   useAvailableFriendsQuery,
@@ -21,10 +22,7 @@ import {
   useRemoveGroupMemberMutation,
   useRenameGroupMutation,
 } from "../redux/api/api";
-import { toast } from "react-hot-toast";
-import { useDispatch, useSelector } from "react-redux";
 import { setIsAddMember } from "../redux/reducers/misc";
-import { Skeleton } from "@mui/material";
 
 const style = {
   position: "absolute",
@@ -47,9 +45,8 @@ const Groups = () => {
   // const [users, setUsers] = useState(SampleUser);
   const [groupName, setGroupName] = useState("");
   const [newGroupName, setNewGroupName] = useState("");
-  const [isEditt, setIsEditt] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+  const [isEditt, setIsEditt] = useState(false); 
+  const [openDelete, setOpenDelete] = useState(false)
   // const handleOpen = () => setOpen(true);
   // const handleClose = () => setOpen(false);
   const handleOpenDelete = () => setOpenDelete(true);

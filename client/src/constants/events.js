@@ -15,6 +15,8 @@ const CHAT_LEAVED = "CHAT_LEAVED";
 
 const ONLINE_USERS = "ONLINE_USERS";
 
+const friendRequestAccepted = "friendRequestAccepted"
+
 export {
   ALERT,
   REFETCH_CHATS,
@@ -27,4 +29,5 @@ export {
   CHAT_JOINED,
   CHAT_LEAVED,
   ONLINE_USERS,
+  friendRequestAccepted
 };

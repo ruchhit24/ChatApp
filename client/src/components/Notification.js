@@ -10,13 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { resetNotificationCount } from '../redux/reducers/chat';
 import {
-  Add as AddIcon,
-  Menu as MenuIcon,
-  Search as SearchIcon,
-  Group as GroupIcon,
-  Logout as LogoutIcon,
   Notifications as NotificationsIcon,
 } from "@mui/icons-material";
+import { useSocket } from '../socket';
+import { IoRefresh } from "react-icons/io5";
 
 const style = {
     position: 'absolute',
@@ -33,15 +30,17 @@ const style = {
 const Notification = () => {
 
   const dispatch = useDispatch();
+
+  const socket = useSocket();
   
-  const { isNotification } = useSelector((state) => state.misc);
+  const { isNotification } = useSelector((state) => state.misc); 
 
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     
     const { isLoading, data, error, isError } = useGetNotificationsQuery();
-  //  console.log('notification ka data = ',data)
+   console.log('notification ka data = ',data)
 
    const [acceptRequest] = useAcceptFriendRequestMutation();
   
@@ -49,7 +48,7 @@ const Notification = () => {
     dispatch(setIsNotification(false));
      try{
       const res = await acceptRequest({requestId : idd,accept})
-      // console.log('res= ',res);
+      console.log('res= ',res);
       if (res.data?.success) {
         // console.log("we need to use sockets here");
         toast.success(res.data.message);
@@ -65,12 +64,16 @@ catch (error) {
   }
   const openNotification = () => {
     dispatch(setIsNotification(true)); 
-    dispatch(resetNotificationCount());
+    dispatch(resetNotificationCount()); 
   };
-
 
   
   const closeHandler = () => dispatch(setIsNotification(false));
+
+  const refreshHandler = ()=>{
+    dispatch(setIsNotification(true))
+    window.location.reload() ;  
+  }
     return (
         <>
             
@@ -84,10 +87,31 @@ catch (error) {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                    <h1 className='text-3xl font-semibold text-center mb-3'>Notifications</h1>
+                     <div className='flex flex-row justify-between'>
+                      
+                     {data?.requests?.length === 0 ? (
+  <div className="flex flex-col items-center">
+    <h2 className="text-2xl font-semibold text-center mb-3">
+      Click Below Refresh Icon if not able to see New Notifications
+    </h2>
+    <button
+      className="flex items-center justify-center bg-transparent border-none focus:outline-none"
+      style={{ width: '50px', height: '50px' }} // Adjust size as needed
+      onClick={refreshHandler}
+    >
+      <IoRefresh style={{ fontSize: '2rem' }} /> {/* Adjust icon size as needed */}
+    </button>
+  </div>
+) : (
+  <h1 className="text-3xl font-semibold text-center mb-3">Notifications</h1>
+)}
+
+                     
+                     </div>
+
                     {isError && <div>Error: {error.message}</div>}
                     {isLoading && <div>Loading...</div>}
-                    {data && (
+                    {
                         data?.requests?.length > 0 ? (
                             data?.requests.map((x) => (
                                 <div key={x._id} className='flex justify-between items-center mt-4 p-3 border-b-[1px] border-gray-300'>
@@ -102,7 +126,7 @@ catch (error) {
                                 </div>
                             ))
                         ) : <div>No notifications</div>
-                    )}
+                    }
                 </Box>
             </Modal>
         </>

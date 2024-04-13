@@ -35,7 +35,8 @@ const api = createApi({
           url: `user/notifications`,
           credentials: "include",
         }),
-        keepUnusedDataFor: 0, // tht means iski caching nhi krenge apn
+        invalidatesTags: ["User"],
+        // keepUnusedDataFor: 0, // tht means iski caching nhi krenge apn
       }),
       acceptFriendRequest: builder.mutation({
         query: (data) => ({
