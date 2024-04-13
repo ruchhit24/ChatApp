@@ -10,6 +10,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom"; 
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import {Link} from 'react-router-dom'
 
  
 
@@ -169,6 +170,11 @@ const Login = () => {
             >
               Sign Up Instead
             </h2>
+            <div className="text-center mt-4">
+              <Link to={'/forgot-password'} className="text-cyan-700 hover:underline cursor-pointer">
+                Forgot Password?
+              </Link>
+            </div>
           </>
         ) : (
           <>

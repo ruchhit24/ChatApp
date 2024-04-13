@@ -16,6 +16,8 @@ import { SocketProvider } from "./socket";
 import VerifyEmail from "./pages/VerifyEmail";
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import ResetPassword from "./pages/ResetPassword";
+import ForgotPassword from "./pages/ForgotPassword";
 
 // let user = true;
 
@@ -73,6 +75,18 @@ const App = () => {
             element={<PrivateRoute user={user} redirect="/verify-email"> {/* Redirect user to VerifyEmail if not verified */}
               <VerifyEmail />
             </PrivateRoute>}
+          />
+          <Route
+            path="/reset-password"
+            element={<PrivateRoute user={user} redirect="/reset-password"> {/* Redirect user to VerifyEmail if not verified */}
+              <ResetPassword />
+            </PrivateRoute>}
+          />
+          <Route
+            path="/forgot-password"
+            element={   
+              <ForgotPassword />
+             }
           />
 
 
